@@ -69,6 +69,51 @@ router.post("/login", (req, res) => {
     });
   });
 
+  router.post("/getByEmail", (req, res) => {
+    console.log(req.body)
+    const { email } = req.body;
+    User.findOne({ email: email }, (err, user) => {
+      
+      if (err) {
+        return res.status(200).json({
+          success: false,
+          message: "Please try again",
+        });
+      }
+      if (user) {
+        console.log(user);
+        return res.status(200).json({
+          message: "Get Profile Successful",
+          success: true,
+          user: user,
+        });
+      } else {
+        return res.status(200).json({
+          message: "No account found. Please login again",
+          success: false,
+        });
+      }
+    });
+  });
+
+  router.get("/getAllUsers", (req, res) => {
+    User.find({}, (err, data) => {
+      if (err) {
+        return res.status(200).json({
+          success: false,
+          message:
+            "There was an error connecting to the database. Please try again",
+        });
+      } else {
+        return res.status(200).json({
+          success: true,
+          message: "Here you go good sir",
+          data: data,
+        });
+      }
+    });
+  });
+
   router.post("/signup", (req, res) => {
     const { name, email, password, role, contactNumber } = req.body;
     User.findOne({ email: email }, (err, user) => {
@@ -111,6 +156,31 @@ router.post("/login", (req, res) => {
           });
         }
       });
+    });
+  });
+
+  router.post("/editUser", (req, res) => {
+    const { name, email, password, contactNumber } = req.body;
+    User.findOneAndUpdate({ email : email },{name:name,password:password,contactNumber:contactNumber}, (err, user) => {
+      if (err) {
+        return res.status(200).json({
+          success: false,
+          message:
+            "There was an error connecting to the database. Please try again",
+        });
+      }
+      else if (user) {
+        return res.status(200).json({
+          success: true,
+          message: "Changes made"
+        });
+      }
+      else{
+        return res.status(200).json({
+          success: false,
+          message: "Please try again later",
+        });
+      }
     });
   });
 
