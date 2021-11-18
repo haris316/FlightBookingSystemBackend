@@ -49,10 +49,10 @@ router.post("/newCompany", (req, res) => {
 });
 
 router.post("/updateCompany", (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, oldPassword, newPassword, contactNumber, country } = req.body;
   Company.findOneAndUpdate(
-    { email:email , password:password },
-    { contactNumber: contactNumber, country: country , name:name },
+    { email:email , password:oldPassword },
+    { contactNumber: contactNumber, country: country , name:name , password:newPassword },
     (err, user) => {
       if (err) {
         return res.status(200).json({
@@ -73,8 +73,7 @@ router.post("/updateCompany", (req, res) => {
 
 router.post("/removeCompany", (req, res) => {
   const { name, email, password, key } = req.body;
-  //this key check is to be replaced with user role later
-  if (key == "01135813") {
+  if (req.body.role ==="admin") {
     Company.findOneAndRemove(
       { name: name, email: email, password: password },
       (err, data) => {
@@ -101,7 +100,7 @@ router.post("/removeCompany", (req, res) => {
       }
     );
   } else {
-    return res.status(200).json({
+    return res.status(403).json({
       success: false,
       message: "Please provide Auth Key",
     });
