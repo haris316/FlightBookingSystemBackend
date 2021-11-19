@@ -11,7 +11,7 @@ const User = new mongoose.model("User", userSchema);
 const Company = new mongoose.model("Company", companySchema);
 
 router.post("/verify", verifyToken, (req, res) => {
-  console.log("req.token")
+  // console.log("req.token")
   jwt.verify(req.token, "secretkey", (err, authData) => {
     if (err) {
       res.sendStatus(403).json({
@@ -101,7 +101,7 @@ router.post("/getByEmail", (req, res) => {
         });
       }
       if (user) {
-        console.log(user);
+        // console.log(user);
         return res.status(200).json({
           message: "Get Profile Successful",
           success: true,
@@ -120,9 +120,10 @@ router.post("/getByEmail", (req, res) => {
     });
 });
 
-router.get("/getAllUsers", (req, res) => {
-  console.log(req.body)
-  if (req.body.role === "admin") {
+router.post("/getAllUsers", (req, res) => {
+  const {role} = req.body;
+  console.log(role)
+  if (role === "admin") {
     User.find({}, (err, data) => {
       if (err) {
         return res.status(200).json({
@@ -219,8 +220,8 @@ router.post("/editUser", (req, res) => {
 });
 
 router.post("/removeUser", (req, res) => {
-  const { name, email, password} = req.body;
-  if (req.body.role === "admin") {
+  const { name, email, password,role} = req.body;
+  if (role === "admin") {
     User.findOneAndRemove(
       { name: name, email: email, password: password },
       (err, data) => {

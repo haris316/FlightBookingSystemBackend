@@ -72,10 +72,10 @@ router.post("/updateCompany", (req, res) => {
 });
 
 router.post("/removeCompany", (req, res) => {
-  const { name, email, password, key } = req.body;
-  if (req.body.role ==="admin") {
+  const { name, email, role } = req.body;
+  if (role ==="admin") {
     Company.findOneAndRemove(
-      { name: name, email: email, password: password },
+      { name: name, email: email},
       (err, data) => {
         if (err) {
           return res.status(200).json({
